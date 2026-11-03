@@ -1,0 +1,6 @@
+{
+  "name": "Mars Mission: The Lost Signal",
+  "description": "A 2D top-down Mars exploration and survival mission at Jezero Crater featuring GTA-style mission progression, rover driving, resource survival, and authentic NASA science.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
