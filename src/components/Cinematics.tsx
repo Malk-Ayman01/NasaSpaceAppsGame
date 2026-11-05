@@ -10,32 +10,60 @@ export const OpeningCinematic: React.FC<OpeningCinematicProps> = ({ onStartMissi
   const [step, setStep] = useState<number>(0);
 
   // Cinematic sequence lines
+
   const cinematicFrames = [
-    {
-      title: 'JEZERO CRATER, MARS',
-      subtitle: 'ARES-1 HUMAN RESEARCH HABITAT // SOL 248',
-      speaker: 'MISSION CONTROL (CAPCOM)',
-      text: 'Ares-1, Houston here. Telemetry uplink has dropped dead. The orbital communications relay across the ridge suffered a critical power coupling rupture.',
-    },
-    {
-      title: 'CRITICAL WINDOW',
-      subtitle: 'COMMUNICATION SYSTEMS OFFLINE',
-      speaker: 'DR. ELENA SOTO (HAB ENGINEER)',
-      text: 'Alex, telemetry confirms our local antenna has no carrier wave. Without the ridge relay, we cannot contact Earth or coordinate incoming resupply.',
-    },
-    {
-      title: 'APPROACHING DUST FRONT',
-      subtitle: 'METEOROLOGICAL SATELLITE WARNING',
-      speaker: 'MISSION CONTROL (CAPCOM)',
-      text: 'Doppler satellite imagery shows a massive regional dust storm rapidly converging on Jezero Crater. When it hits, outdoor EVA will become lethal.',
-    },
-    {
-      title: 'CMDR. ALEX VANCE',
-      subtitle: 'EVA MISSION SPECIALIST',
-      speaker: 'ALEX VANCE',
-      text: 'Copy that, Director. I will grab the spare coupler from the depot, take the rover through the basalt field, and restore the relay before we lose our window.',
-    },
-  ];
+  {
+    title: 'JEZERO CRATER, MARS',
+    subtitle: 'ARES-1 HUMAN RESEARCH HABITAT // SOL 248',
+    speaker: 'MISSION CONTROL (CAPCOM)',
+    text: 'Ares-1, Houston here. Telemetry uplink has dropped dead. The orbital communications relay across the ridge suffered a critical power coupling rupture.',
+  },
+  {
+    title: 'CRITICAL WINDOW',
+    subtitle: 'COMMUNICATION SYSTEMS OFFLINE',
+    speaker: 'DR. SAMANTA (SYSTEMS & PROPULSION ENGINEER)',
+    text: 'Alex, telemetry confirms our local antenna has no carrier wave. Without the ridge relay, we cannot contact Earth or coordinate incoming resupply.',
+  },
+  {
+    title: 'APPROACHING DUST FRONT',
+    subtitle: 'METEOROLOGICAL SATELLITE WARNING',
+    speaker: 'MISSION CONTROL (CAPCOM)',
+    text: 'Doppler satellite imagery shows a massive regional dust storm rapidly converging on Jezero Crater. When it hits, outdoor EVA will become lethal.',
+  },
+  {
+    title: 'HAZELOOM',
+    subtitle: 'MISSION COMMANDER',
+    speaker: 'HAZELOOM',
+    text: 'Copy that, Director. I will grab the spare coupler from the depot, take the rover through the basalt field, and restore the relay before we lose our window.',
+  },
+];
+
+  // const cinematicFrames = [
+  //   {
+  //     title: 'JEZERO CRATER, MARS',
+  //     subtitle: 'ARES-1 HUMAN RESEARCH HABITAT // SOL 248',
+  //     speaker: 'MISSION CONTROL (CAPCOM)',
+  //     text: 'Ares-1, Houston here. Telemetry uplink has dropped dead. The orbital communications relay across the ridge suffered a critical power coupling rupture.',
+  //   },
+  //   {
+  //     title: 'CRITICAL WINDOW',
+  //     subtitle: 'COMMUNICATION SYSTEMS OFFLINE',
+  //     speaker: 'DR. ELENA SOTO (HAB ENGINEER)',
+  //     text: 'Alex, telemetry confirms our local antenna has no carrier wave. Without the ridge relay, we cannot contact Earth or coordinate incoming resupply.',
+  //   },
+  //   {
+  //     title: 'APPROACHING DUST FRONT',
+  //     subtitle: 'METEOROLOGICAL SATELLITE WARNING',
+  //     speaker: 'MISSION CONTROL (CAPCOM)',
+  //     text: 'Doppler satellite imagery shows a massive regional dust storm rapidly converging on Jezero Crater. When it hits, outdoor EVA will become lethal.',
+  //   },
+  //   {
+  //     title: 'CMDR. ALEX VANCE',
+  //     subtitle: 'EVA MISSION SPECIALIST',
+  //     speaker: 'ALEX VANCE',
+  //     text: 'Copy that, Director. I will grab the spare coupler from the depot, take the rover through the basalt field, and restore the relay before we lose our window.',
+  //   },
+  // ];
 
   useEffect(() => {
     sounds.playRadioBeep();

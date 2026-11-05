@@ -21,6 +21,11 @@ export interface GameResources {
   rockCollisions: number;
 }
 
+// export type CharacterId =
+//   | 'hadeya'
+//   | 'samanta'
+//   | 'hazeloom'
+//   | 'chen';
 export type CharacterId = 'alex' | 'chen' | 'soto';
 
 export interface DialogueLine {

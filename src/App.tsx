@@ -13,11 +13,45 @@ import { MainMenu } from './components/MainMenu';
 import { DIALOGUE_SCRIPTS, NASA_FACTS } from './data/nasaContent';
 import { GameResources, MissionStage, Waypoint, DialogueLine, EducationalFact, MissionStats } from './types/game';
 import { sounds } from './audio/SoundManager';
+import LoadingScreen  from './components/LoadingScreen';
+import CrewSelectionPage from './components/CrewSelectionPage';
+import type { crews } from './data/CrewData';
+import HomePage from './components/HomePage';
+import MissionsPage from './components/MissionsPage';
+import RotateDevice from "./components/RotateDevice";
 
-type GameScreenState = 'menu' | 'cinematic' | 'playing' | 'mission_complete' | 'mission_failed';
+
+
+
+type GameScreenState =
+  | 'home'
+  | 'loading'
+  | 'crew_selection'
+  | 'missions'
+  | 'mission_menu'
+  | 'cinematic'
+  | 'playing'
+  | 'mission_complete'
+  | 'mission_failed';
+
+// type GameScreenState =
+//   | 'menu'
+//   | 'loading'
+//   | 'crew_selection'
+//   | 'crew_details'
+//   | 'cinematic'
+//   | 'playing'
+//   | 'mission_complete'
+//   | 'mission_failed';
+
+type CrewMember = (typeof crews)[number];
+// type GameScreenState = 'menu' |'loading'| 'cinematic' | 'playing' | 'mission_complete' | 'mission_failed';
 
 export default function App() {
-  const [screenState, setScreenState] = useState<GameScreenState>('menu');
+
+  const [screenState, setScreenState] = useState<GameScreenState>('home');
+  // const [screenState, setScreenState] = useState<GameScreenState>('menu');
+  const [selectedCrew, setSelectedCrew] = useState<CrewMember | null>(null);
   const [stage, setStage] = useState<MissionStage>('stage_1_leave_habitat');
 
   const [resources, setResources] = useState<GameResources>({
@@ -159,18 +193,89 @@ export default function App() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-[#0c0706] font-display crt-overlay">
+      <RotateDevice />
+
+ 
+{/* 1. HOME PAGE */}
+{screenState === 'home' && (
+  <HomePage
+    onStart={() => setScreenState('loading')}
+  />
+)}
+
+{/* 2. LOADING SCREEN */}
+{screenState === 'loading' && (
+  <LoadingScreen
+    onComplete={() => setScreenState('crew_selection')}
+  />
+)}
+
+{/* 3. CREW SELECTION + CREW DETAILS */}
+{screenState === 'crew_selection' && (
+  <CrewSelectionPage
+    onContinue={(crew) => {
+      setSelectedCrew(crew);
+      setScreenState('missions');
+    }}
+    onBack={() => setScreenState('home')}
+  />
+)}
+
+{/* 4. MISSIONS PAGE */}
+{screenState === 'missions' && (
+  <MissionsPage
+    onSelectMission1={() => setScreenState('mission_menu')}
+    onBack={() => setScreenState('crew_selection')}
+  />
+)}
+
+{/* 5. ORIGINAL MISSION 1 MENU */}
+{screenState === 'mission_menu' && (
+  <MainMenu
+    onStartGame={() => setScreenState('cinematic')}
+    onOpenFieldGuide={() => setIsFieldGuideOpen(true)}
+  />
+)}
+
+{/* 6. ORIGINAL OPENING CINEMATIC */}
+{screenState === 'cinematic' && (
+  <OpeningCinematic
+    onStartMission={handleStartMissionFromCinematic}
+  />
+)}
+
+
       {/* 1. MAIN MENU SCREEN */}
-      {screenState === 'menu' && (
+      {/* {screenState === 'menu' && (
         <MainMenu
-          onStartGame={() => setScreenState('cinematic')}
+        onStartGame={() => setScreenState('loading')}
+          // onStartGame={() => setScreenState('cinematic')}
           onOpenFieldGuide={() => setIsFieldGuideOpen(true)}
         />
-      )}
+      )} */}
+
+      {/* LOADING SCREEN */}
+{/* {screenState === 'loading' && (
+  <LoadingScreen
+    onComplete={() => setScreenState('crew_selection')}
+  />
+)} */}
+
+{/* CREW SELECTION */}
+{/* {screenState === 'crew_selection' && (
+  <CrewSelectionPage
+    onContinue={(crew) => {
+      setSelectedCrew(crew);
+      setScreenState('cinematic');
+    }}
+    onBack={() => setScreenState('menu')}
+  />
+)} */}
 
       {/* 2. OPENING CINEMATIC */}
-      {screenState === 'cinematic' && (
+      {/* {screenState === 'cinematic' && (
         <OpeningCinematic onStartMission={handleStartMissionFromCinematic} />
-      )}
+      )} */}
 
       {/* 3. PLAYABLE GAME PHASER SCENE */}
       {(screenState === 'playing' || screenState === 'mission_complete' || screenState === 'mission_failed') && (
