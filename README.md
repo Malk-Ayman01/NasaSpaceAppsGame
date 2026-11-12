@@ -1,189 +1,144 @@
-# Mars Mission: The Lost Signal (Mission 1)
-### 2D Top-Down Mars Exploration & Survival Prototype
+# Mars Mission: Jezero Crater Expeditions
 
-Inspired by **GTA V mission architecture**, narrative choice and emotional storytelling, and authentic **NASA Perseverance & Jezero Crater scientific data**.
+### 2D Top-Down Mars Exploration, Survival & Spaceflight Game (Phaser + React)
 
----
-
-## 🚀 Game Overview
-
-The year is 2038. Earth is facing an accelerating resource crisis, and the human Mars exploration program has established the **Ares-1 Research Base** inside Jezero Crater—the same ancient river delta explored by NASA's Perseverance rover.
-
-During **Sol 248**, a severe power coupling rupture at the regional communications relay tower leaves the base completely disconnected from Earth's Deep Space Network. Concurrently, orbital weather satellites detect a massive planetary dust storm advancing toward Jezero Crater.
-
-As **Commander Alex Vance**, you must leave the habitat, secure a replacement power coupler, drive the 6-wheeled exploration rover across a hazardous basalt boulder canyon, repair the communications dish, and race back before the dust storm engulfs your sector.
+Join astronauts **Hazaloom**, **Hedeya**, and **Samantha** at **Ares-1 Base** inside Jezero Crater in a 3-mission interactive campaign featuring real **NASA Perseverance, RIMFAX, MEDA, and Mars Sample Return** science written in kid-friendly English.
 
 ---
 
-## 🎮 Gameplay & Mission Sequence
+## 🚀 Game Overview & Storyline
 
-### Stage 1: Leave the Habitat
-- Exit the pressurized Ares-1 airlock into the Martian environment.
-- Suit life support activates; outdoor oxygen consumption begins.
-- Receive mission briefing from Chief Engineer Dr. Elena Soto and Capcom Director Chen.
+After touching down on Mars, the crew begins a routine landing check outside their spacecraft—until a sudden cabin emergency ("**The Moment Everything Changed**") damages their return ship and knocks out communications with Earth.
 
-### Stage 2: Retrieve the Power Coupler
-- Locate the exterior emergency supply crate south of the habitat.
-- Press **[E]** to interact, opening the crate and adding the power coupler to your inventory.
-- Unlocks NASA Science Card #2: *Planetary In-Situ Repairs & Spares*.
+Progress through three linked, sequentially unlocked missions (finish each mission to unlock the next):
 
-### Stage 3: Board and Pilot the Mars Rover
-- Move to the rover parking depot and press **[E]** to board the rover.
-- Drive using **WASD** or **Arrow Keys** with realistic steering and momentum.
-- Avoid collisions with basalt boulders: each hard impact damages chassis integrity (-10%) and triggers alarms.
-- Rough sand dunes reduce vehicle speed and double battery consumption.
-
-### Stage 4: Repair Communications Relay
-- Reach the communications relay tower past the central crater gorge.
-- Exit rover (**[E]**), approach the terminal, and initiate the repair sequence.
-- Uses 5% battery to jump-start the transmitter.
-- Restores downlink with Earth; unlocks NASA Science Card #3: *Deep Space Network & Relay Satellites*.
-
-### Stage 5: Dust Storm Evacuation
-- High-priority alert: the dust storm shifts course, enveloping the sector in minutes.
-- Visibility drops with thick red dust particle effects and howling ambient winds.
-- Suit oxygen consumption doubles (0.30%/s).
-- Race back to Ares-1 habitat on wheels or on foot.
-
-### Stage 6: Mission Complete & Mystery Signal
-- Re-enter the habitat airlock safe zone (oxygen restores to 100%).
-- Restored communications pick up an unidentified anomalous signal originating from the crater floor:
-  > *“Signal recovered. But we are not alone out here…”*
-- GTA-style debriefing screen displays total time, remaining oxygen, rover battery, hull integrity, and discoveries unlocked.
+1. **Mission 1 — Mission Home Begins** (`Mission1Scene`)
+   - Perform the opening landing check near the spacecraft to trigger the emergency cutscene (`DisasterCinematicModal`) and inspect the **Damaged Ship Status** screen.
+   - Collect a spare power part from the emergency crate, drive the rover across rocky terrain, repair the Earth radio tower, and race back to the habitat before the dust storm hits.
+2. **Mission 2 — Underground Cave** (`Mission2Scene`)
+   - Follow the subterranean RIMFAX radar signal into Neretva Vallis and deploy two ground sensors.
+   - Descend through a volcanic skylight into a dark Martian lava tube, drill a rock core sample (**Tube #14**), and escape before a Marsquake collapses the cave.
+3. **Mission 3 — Rocket Home** (`Mission3Scene`)
+   - Stabilize the damaged rover power grid via the interactive **Power Bus Console** (`PowerBusConsoleModal`), keeping power draw safely under `400W`.
+   - Drive past swirling dust devils to the launch pad, load the rock sample into the **Mars Ascent Vehicle (MAV)**, pilot a two-stage rocket ascent (`[SPACE]` stage separation), and dock with the Earth Return Orbiter in space.
 
 ---
 
-## ⚙️ Game Rules & Technical Calculations
+## 👩‍🚀 Meet the Crew
 
-All mechanics use delta time (`dt = delta / 1000`) for framerate-independent consistency:
+Players start through the **ARES Program** intro (`HomePage` → `LoadingScreen` → `CrewSelectionPage` / `CrewDetailsPage`) to pick a crew leader before heading to **Mission Select** (`MissionsPage`) and the **Main Menu**:
 
-### 1. Oxygen Life Support
-- **Baseline outdoor drain:** `0.15%` per second
-- **Dust storm outdoor drain:** `0.30%` per second
-- **Formula:** `oxygen = max(0, oxygen - drainRate * dt)`
-- **Habitat safe zone:** Standing inside the airlock ring restores oxygen at `+35%/s` up to `100%`.
-- **Failure state:** If oxygen reaches `0%`, mission fails immediately with an incident debrief.
-
-### 2. Rover Battery
-- **Flat terrain driving drain:** `0.20%` per second
-- **Rough sand dune drain:** `0.40%` per second
-- **Relay repair power cost:** `-5.0%`
-- **Stationary / idle:** `0.0%` drain
-- **Formula:** `battery = max(0, battery - drainRate * dt)`
-- If battery drains to `0%`, the rover stops. The astronaut can disembark and complete the mission on foot!
-
-### 3. Rover Hull Condition
-- **Starting integrity:** `100%`
-- **Significant rock impact:** `-10%` per collision (with camera shake and metallic collision audio).
-- If condition reaches `0%`, the suspension breaks permanently, forcing the player to proceed on foot.
+| Crew Member | ID | Role | Portrait |
+|---|---|---|---|
+| **Hazaloom** | `03-CMD` | Mission Commander — Drives the Mars rover, leads the team, and guides the mission home | `public/assets/characters/haz.png` |
+| **Hedeya** | `01-BIO` | Fix-It & Science Engineer — Keeps spacesuits, life support, and Mars tools running safely | `public/assets/characters/had.png` |
+| **Samantha** | `02-ENG` | Space Scientist & Power Lead — Checks ship power systems and studies Martian rocks & caves | `public/assets/characters/sam.png` |
 
 ---
 
-## ⌨️ Controls
+## 🎬 In-Game Disaster Cutscene (`<video>`) Setup
 
-| Action | Key / Control |
+During Mission 1's opening exploration, checking the spacecraft freezes gameplay and launches `DisasterCinematicModal`—an interactive HTML5 `<video>` player with timed subtitles, a **Skip** button, and a **Replay** option.
+
+Place your AI-generated video clip(s) (e.g., from Google Flow, Kling AI, or CapCut) inside `public/assets/cinematic/`:
+
+- **Option 1 (Single edited video):**
+  ```text
+  public/assets/cinematic/cutscene.mp4
+  ```
+- **Option 2 (Five sequential scene clips):**
+  ```text
+  public/assets/cinematic/scene_01.mp4
+  public/assets/cinematic/scene_02.mp4
+  public/assets/cinematic/scene_03.mp4
+  public/assets/cinematic/scene_04.mp4
+  public/assets/cinematic/scene_05.mp4
+  ```
+
+If no `.mp4` files are placed in `public/assets/cinematic/` yet, the player also lets you load a local `.mp4`/`.webm` file directly in the browser or skip ahead to the **Damaged Ship Status** briefing.
+
+---
+
+## ⚙️ Survival Mechanics & Controls
+
+### Survival Systems
+- **Oxygen:** Drains outdoors (`0.16%/s`), increases during the Mission 1 dust storm (`0.30%/s`), and refills inside the habitat safe ring (`+35%/s`).
+- **Rover Battery:** Drains when driving (`0.20%/s` flat terrain, `0.40%/s` rough sand), `0.00%/s` idle, with extra power used by repairs and drilling.
+- **Rover Integrity:** Starts at `100%`; rock, stalactite, and dust-devil impacts reduce integrity. At `0%`, the rover breaks down and you must finish on foot.
+- **RIMFAX Radar (Mission 2):** Distance-based signal meter and dynamic sonar pings guide you to sensor points and the lava tube.
+- **Two-Stage Ascent & Docking (Mission 3):** Steer the ascent corridor, separate Stage 1 with **`[SPACE]`**, and align with the Earth Return Orbiter docking ring.
+
+### Controls
+| Input | Action |
 |---|---|
-| **Walk / Drive** | `W`, `A`, `S`, `D` or `Arrow Keys` |
-| **Interact / Board Rover / Exit Rover** | `[E]` |
-| **Advance / Fast-Forward Radio Dialogue** | `[SPACE]` or `[ENTER]` |
-| **Open NASA Field Guide** | `[M]` or HUD button |
-| **Pause / Controls Guide** | `[ESC]` or top-right menu button |
-| **Audio Toggle (Mute/Unmute)** | Top-right speaker icon |
+| **`W`, `A`, `S`, `D` / Arrow Keys** | Walk astronaut, drive rover, or steer the Mars Rocket |
+| **`[E]`** | Interact (ship check, crates, board/exit rover, repair relay, place sensors, drill rock, launch rocket) |
+| **`[SPACE]` / `[ENTER]`** | Advance radio dialogue; press **`[SPACE]`** in Mission 3 to drop Rocket Stage 1 |
+| **`[M]`** | Open the **NASA Planetary Science Field Guide** |
+| **`[ESC]`** | Pause Menu & Controls |
+| **Speaker Icon (Top-Right)** | Mute / Unmute procedural Web Audio sound effects |
 
 ---
 
-## 🔬 Authentic NASA Science & Image Credits
+## 🔬 NASA Field Guide Entries (`src/data/nasaContent.ts`)
 
-All scientific entries are grounded in official NASA documentation and use real mission images stored locally:
-
-1. **Jezero Crater & Ancient Lake Delta**
-   - *File:* `/assets/nasa/jezero_crater.jpg`
-   - *NASA ID:* PIA25673 (Map of Perseverance's Delta Top Campaign)
-   - *Source:* [NASA Mars 2020 Perseverance Mission](https://science.nasa.gov/mission/mars-2020-perseverance/)
-
-2. **Planetary In-Situ Repairs & Spares**
-   - *File:* `/assets/nasa/perseverance_rover.jpg`
-   - *NASA ID:* PIA24542 (Perseverance & Ingenuity at Van Zyl Overlook)
-   - *Source:* [NASA JPL Mars Exploration Program](https://mars.nasa.gov/mars2020/multimedia/raw-images/)
-
-3. **Deep Space Network & Mars Relay Orbiters**
-   - *File:* `/assets/nasa/deep_space_network.jpg`
-   - *NASA ID:* PIA13559 (70-Meter Deep Space Communications Antenna)
-   - *Source:* [NASA Deep Space Network](https://www.nasa.gov/directorates/somd/space-communications-navigation-program/deep-space-network/)
-
-4. **Martian Dust Storms & Atmospheric Hazards**
-   - *File:* `/assets/nasa/mars_dust_storm.jpg`
-   - *NASA ID:* PIA22329 (NASA Mars Global Dust Storm Comparison)
-   - *Source:* [NASA Mars Exploration Science](https://science.nasa.gov/mission/mars-2020-perseverance/science/)
+10 real NASA observation cards unlock as you play:
+1. **Jezero Crater: An Old Lake on Mars** (`jezero_crater`)
+2. **Fixing Broken Tools on Mars** (`equipment_maintenance`)
+3. **How Mars Talks to Earth — Deep Space Network** (`space_communications`)
+4. **Big Dust Storms on Mars** (`martian_dust_storms`)
+5. **Looking Underground with Radar — RIMFAX** (`rimfax_subsurface_radar`)
+6. **Neretva Valley: An Ancient River** (`neretva_vallis_floods`)
+7. **Underground Caves on Mars — Lava Tubes** (`martian_lava_tubes`)
+8. **Drilling a Mars Rock Sample** (`sample_core_caching`)
+9. **Keeping Rover Power Safe from Dust — MEDA** (`sample_caching_heritage`)
+10. **Launching a Rocket from Mars — Mars Ascent Vehicle** (`mars_ascent_vehicle`)
 
 ---
 
-## 🛠️ Technology Stack & Architecture
+## 📁 Project Structure
 
-- **Game Engine:** Phaser 3 (Arcade Physics, dynamic particle emitters, custom procedural texture generation).
-- **Frontend Framework:** React 19 + TypeScript + Vite.
-- **Audio Engine:** Zero-dependency Web Audio API procedural synthesizer (dynamic engine pitch, footstep crunches, radio beeps, collision clatter, warning alarms, wind ambiance, and GTA-style brass stingers).
-- **Styling:** Tailwind CSS v4, custom CRT scanline overlays, responsive HUD layout.
-- **Backend:** 100% client-side prototype. No server or database required.
-
-### Project Directory Structure
-```
-/
+```text
 ├── public/
 │   └── assets/
-│       └── nasa/                  # Authentic NASA photographs (local offline cache)
-│           ├── jezero_crater.jpg
-│           ├── perseverance_rover.jpg
-│           ├── deep_space_network.jpg
-│           └── mars_dust_storm.jpg
+│       ├── characters/          # Pixel-art crew portraits (had.png, haz.png, sam.png)
+│       ├── cinematic/           # Drop cutscene.mp4 or scene_01..05.mp4 here
+│       └── nasa/                # Real NASA Mars mission photographs
 ├── src/
-│   ├── audio/
-│   │   └── SoundManager.ts        # Web Audio API synthesizer
-│   ├── components/
-│   │   ├── Cinematics.tsx         # Opening mission cinematic
-│   │   ├── DialogueOverlay.tsx    # Character portraits & typewriter radio box
-│   │   ├── EducationalModal.tsx   # Verified NASA science popup cards
-│   │   ├── GameOverModal.tsx      # Life support failure screen
-│   │   ├── HUD.tsx                # GTA V style radar, meters, and objective banners
-│   │   ├── MainMenu.tsx           # Mission launcher & briefing screen
-│   │   ├── MissionCompleteModal.tsx # Debrief stats & cliffhanger ending
-│   │   ├── NasaFieldGuide.tsx     # Full encyclopedia of discovered NASA facts
-│   │   └── PauseMenu.tsx          # Controls guide & options
+│   ├── audio/SoundManager.ts    # Procedural Web Audio synthesizer
+│   ├── components/              # HomePage, LoadingScreen, CrewSelection, MissionsPage,
+│   │                            # MainMenu, HUD, DialogueOverlay, DisasterCinematicModal,
+│   │                            # DamagedShipStatusModal, PowerBusConsoleModal, NasaFieldGuide, etc.
 │   ├── data/
-│   │   └── nasaContent.ts         # Educational facts & radio dialogue scripts
-│   ├── game/
-│   │   ├── scenes/
-│   │   │   └── Mission1Scene.ts   # Core Phaser 3 physics, driving, and mission loop
-│   │   ├── textures/
-│   │   │   └── MarsTextures.ts    # Procedural texture & sprite generator
-│   │   └── MarsGameCanvas.tsx     # React to Phaser canvas mounting bridge
-│   ├── types/
-│   │   └── game.ts                # TypeScript interfaces
-│   ├── App.tsx                    # Root orchestrator
-│   ├── index.css                  # Martian themes & scanlines
-│   └── main.tsx                   # React entry point
+│   │   ├── CrewData.ts          # Crew profiles (Hedeya, Samantha, Hazaloom)
+│   │   ├── nasaContent.ts       # Kid-friendly dialogue & 10 NASA Field Guide cards
+│   │   ├── mission2Data.ts
+│   │   └── mission3Data.ts
+│   └── game/
+│       ├── MarsGameCanvas.tsx   # Phaser lifecycle & scene bridge
+│       ├── scenes/              # Mission1Scene.ts, Mission2Scene.ts, Mission3Scene.ts
+│       └── textures/            # Procedural Mars terrain, rover, cave & rocket textures
+├── index.html
+├── metadata.json
 └── package.json
 ```
 
 ---
 
-## 📦 Installation & Run Instructions
+## 🛠️ Tech Stack & Local Setup
+
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Lucide Icons
+- **Game Engine:** Phaser (Arcade Physics, multi-scene progression, particle emitters)
+- **Audio:** Procedural Web Audio API synthesizer
 
 ```bash
 # 1. Install dependencies
 npm install
 
-# 2. Start local development server
+# 2. Start the development server on port 3000
 npm run dev
 
-# 3. Open in browser
-# Navigate to http://localhost:3000
+# 3. Type-check and build for production
+npm run lint
+npm run build
 ```
-
----
-
-## ⚠️ Known Limitations & Future Roadmap
-
-- **Mission 2: The Anomaly:** The mysterious repeating signal discovered in Mission 1 sets up the narrative arc for Mission 2 (exploring an ancient subsurface lava tube).
-- **Controller Support:** The prototype is currently optimized for desktop keyboard controls (`WASD` + `E` + `Space`). Gamepad API integration can be added in subsequent milestones.
-- **Expanded Map Zones:** Mission 1 is intentionally compact and bounded to deliver a tightly calibrated university team prototype without overextending maintenance scope.
